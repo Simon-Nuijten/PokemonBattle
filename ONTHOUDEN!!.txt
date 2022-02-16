@@ -1,0 +1,2 @@
+Maak voor een fight een class aan die 2 pokemons bevat. Vanaf daar kan je de hele fight hanteren
+niet alles vanuit de main class
