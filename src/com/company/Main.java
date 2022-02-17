@@ -26,6 +26,8 @@ import javafx.stage.Stage;
 
 import javax.sound.sampled.*;
 
+import static javax.swing.JOptionPane.showMessageDialog;
+
 public class Main extends Application{
     private Pokemon onix;
     private Pokemon pikachu;
@@ -42,11 +44,11 @@ public class Main extends Application{
         BorderPane borderPane = new BorderPane();
 
 
-        String musicFile = "battle.mp3";
-        Media sound = new Media(new File(musicFile).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.setVolume(0.1);
-        mediaPlayer.play();
+//        String musicFile = "battle.mp3";
+//        Media sound = new Media(new File(musicFile).toURI().toString());
+//        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+//        mediaPlayer.setVolume(0.1);
+//        mediaPlayer.play();
 
         Image blast = new Image("blast.gif");
         Image wave = new Image("shockwave.gif");
@@ -107,6 +109,8 @@ public class Main extends Application{
                 battleAttack.setImage(wave);
                 onix.setHealth(onix.getHealth() - shockwave.getPower());
                 info.setText("Pikachu did Shockwave");
+                attack1.setVisible(false);
+                attack2.setVisible(false);
                 new java.util.Timer().schedule(
                         new java.util.TimerTask() {
                             @Override
@@ -115,12 +119,18 @@ public class Main extends Application{
                                     battleAttack.setImage(null);
                                     info.setText(getHealth(onix));
                                     setHealth();
+                                    if(checkHealth()){
+                                        showMessageDialog(null, "Battle is over.... ");
+                                        primaryStage.close();
+                                    }
                                     new java.util.Timer().schedule(
                                             new java.util.TimerTask() {
                                                 @Override
                                                 public void run() {
                                                     Platform.runLater(() -> {
                                                         onixMove();
+                                                        attack1.setVisible(true);
+                                                        attack2.setVisible(true);
                                                     });
                                                 }
                                             },
@@ -139,6 +149,8 @@ public class Main extends Application{
                 battleAttack.setImage(blast);
                 onix.setHealth(onix.getHealth() - shockblast.getPower());
                 info.setText("Pikachu did shockblast");
+                attack1.setVisible(false);
+                attack2.setVisible(false);
                 new java.util.Timer().schedule(
                         new java.util.TimerTask() {
                             @Override
@@ -147,12 +159,19 @@ public class Main extends Application{
                                     battleAttack.setImage(null);
                                     info.setText(getHealth(onix));
                                     setHealth();
+                                    checkHealth();
+                                    if(checkHealth()){
+                                        showMessageDialog(null, "Battle is over.... ");
+                                        primaryStage.close();
+                                    }
                                     new java.util.Timer().schedule(
                                             new java.util.TimerTask() {
                                                 @Override
                                                 public void run() {
                                                     Platform.runLater(() -> {
                                                         onixMove();
+                                                        attack1.setVisible(true);
+                                                        attack2.setVisible(true);
                                                     });
                                                 }
                                             },
@@ -222,7 +241,6 @@ public class Main extends Application{
         Move chosenMove = moves.get(int_random);
 
         pikachu.setHealth(pikachu.getHealth() - chosenMove.getPower());
-        System.out.println(chosenMove.getName());
         info.setText("Onix did " + chosenMove.getName() + "....");
         Image move = new Image(chosenMove.getMoveUrl());
         battleAttack.setImage(move);
@@ -234,10 +252,23 @@ public class Main extends Application{
                             battleAttack.setImage(null);
                             info.setText(getHealth(pikachu));
                             setHealth();
+                            if(checkHealth()){
+                                showMessageDialog(null, "Battle is over.... ");
+                            }
                         });
                     }
                 },
                 2000
         );
+    }
+    private boolean checkHealth(){
+        if(pikachu.getHealth() == 0){
+            return true;
+        }
+        if(onix.getHealth() == 0){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
